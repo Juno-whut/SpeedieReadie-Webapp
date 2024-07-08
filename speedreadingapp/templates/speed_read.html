@@ -1,0 +1,209 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+    Speed Reading Session {{ title }}
+{% endblock %}
+
+{% block content %}
+    <h2>{{ title }}</h2>
+    <div class="container">
+        <div class="reader">
+            <div id="display-area" class="display-area"></div>
+            <div class="controls">
+                <button class="btn" id="play-pause" onclick="playPauseReading()">Play/Pause</button>
+                <button class="btn" onclick="resetReading()">Reset</button>
+                <button class="btn" onclick="openSettings()">Settings</button>
+            </div>
+        </div>
+        <div id="settings-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeSettings()">&times;</span>
+                <h3>Settings</h3>
+                <div class="setting">
+                    <label for="wpm">Speed (WPM):</label>
+                    <input type="number" id="wpm" value="{{ settings.wpm|default:300 }}" min="0">
+                </div>
+                <div class="setting">
+                    <label for="words-at-once">Chunk Size (words):</label>
+                    <select id="words-at-once">
+                        <option value="1" {% if settings.chunk_size == 1 %}selected{% endif %}>1</option>
+                        <option value="2" {% if settings.chunk_size == 2 %}selected{% endif %}>2</option>
+                        <option value="3" {% if settings.chunk_size == 3 %}selected{% endif %}>3</option>
+                        <option value="4" {% if settings.chunk_size == 4 %}selected{% endif %}>4</option>
+                        <option value="5" {% if settings.chunk_size == 5 %}selected{% endif %}>5</option>
+                        <option value="6" {% if settings.chunk_size == 6 %}selected{% endif %}>6</option>
+                    </select>
+                </div>
+                <div class="setting">
+                    <label for="font-size">Font Size (px):</label>
+                    <select id="font-size">
+                        <option value="30" {% if settings.font_size == 30 %}selected{% endif %}>30</option>
+                        <option value="40" {% if settings.font_size == 40 %}selected{% endif %}>40</option>
+                        <option value="50" {% if settings.font_size == 50 %}selected{% endif %}>50</option>
+                        <option value="60" {% if settings.font_size == 60 %}selected{% endif %}>60</option>
+                        <option value="70" {% if settings.font_size == 70 %}selected{% endif %}>70</option>
+                        <option value="80" {% if settings.font_size == 80 %}selected{% endif %}>80</option>
+                    </select>
+                </div>
+                <div class="setting">
+                    <label for="text-color">Text Color:</label>
+                    <input type="color" id="text-color" value="{{ settings.text_color|default:'#000000' }}">
+                </div>
+                <div class="setting">
+                    <label for="background-color">Background Color:</label>
+                    <input type="color" id="background-color" value="{{ settings.background_color|default:'#ffffff' }}">
+                </div>
+                <button class="btn" onclick="applySettings()">Apply</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let words = [];
+    let currentWordIndex = 0;
+    let readingInterval = null;
+    let isPlaying = false;
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const text = "{{ text|escapejs }}";
+        words = text.split(/\s+/);
+        document.getElementById("display-area").textContent = words[0] || '';
+        
+        // Load user settings
+        loadUserSettings();
+    });
+
+    function loadUserSettings() {
+        fetch("/library/user_settings/")
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById("wpm").value = data.settings.wpm;
+                document.getElementById("words-at-once").value = data.settings.chunk_size;
+                document.getElementById("font-size").value = data.settings.font_size;
+                document.getElementById("text-color").value = data.settings.text_color;
+                document.getElementById("background-color").value = data.settings.background_color;
+                applySettings();
+            } else {
+                console.error("Error loading settings:", data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Error loading settings:", error);
+        });
+    }
+
+    function displayWord() {
+        const wordsAtOnce = parseInt(document.getElementById("words-at-once").value);
+        if (currentWordIndex < words.length) {
+            document.getElementById('display-area').innerText = words.slice(currentWordIndex, currentWordIndex + wordsAtOnce).join(' ');
+            currentWordIndex += wordsAtOnce;
+        } else {
+            clearInterval(readingInterval);
+            isPlaying = false;
+        }
+    }
+
+    function startReading() {
+        const wpm = parseInt(document.getElementById("wpm").value);
+        const wordsAtOnce = parseInt(document.getElementById("words-at-once").value);
+        const interval = 60000 / wpm * wordsAtOnce;
+        readingInterval = setInterval(displayWord, interval);
+        isPlaying = true;
+    }
+
+    function playPauseReading() {
+        if (isPlaying) {
+            clearInterval(readingInterval);
+            isPlaying = false;
+        } else {
+            startReading();
+        }
+    }
+
+    function resetReading() {
+        clearInterval(readingInterval);
+        currentWordIndex = 0;
+        document.getElementById('display-area').innerText = words[0] || '';
+    }
+
+    function openSettings() {
+        document.getElementById("settings-modal").style.display = 'block';
+    }
+
+    function closeSettings() {
+        document.getElementById("settings-modal").style.display = 'none';
+    }
+
+    function applySettings() {
+        const displayArea = document.getElementById("display-area");
+        displayArea.style.fontSize = document.getElementById("font-size").value + 'px';
+        displayArea.style.color = document.getElementById("text-color").value;
+        displayArea.style.backgroundColor = document.getElementById("background-color").value;
+        closeSettings();
+        saveUserSettings();
+        if (isPlaying) {
+            clearInterval(readingInterval);
+            startReading();
+        }
+    }
+
+    function saveUserSettings() {
+        const settings = {
+            wpm: parseInt(document.getElementById("wpm").value),
+            chunk_size: parseInt(document.getElementById("words-at-once").value),
+            font_size: parseInt(document.getElementById("font-size").value),
+            text_color: document.getElementById("text-color").value,
+            background_color: document.getElementById("background-color").value
+        };
+
+        fetch("/library/save_user_settings/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify(settings)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                console.error("Error saving settings:", data.message);
+            } else {
+                console.log("Settings saved successfully!");
+            }
+        })
+        .catch(error => {
+            console.error("Error saving settings:", error);
+        });
+    }
+
+    function adjustWpm(increment) {
+        const wpmInput = document.getElementById('wpm');
+        wpmInput.value = parseInt(wpmInput.value) + increment;
+        if (isPlaying) {
+            clearInterval(readingInterval);
+            startReading();
+        }
+    }
+
+    document.addEventListener('keydown', function(event) {
+        const hotkeys = new Map([
+            ['p', playPauseReading],
+            ['r', resetReading],
+            ['s', openSettings],
+            ['ArrowUp', () => adjustWpm(25)],
+            ['ArrowDown', () => adjustWpm(-25)],
+        ]);
+        const func = hotkeys.get(event.key);
+        if (func) {
+            func();
+        } else {
+            console.log("Unrecognized hotkey: " + event.key);
+        }
+    });
+</script>
+{% endblock %}

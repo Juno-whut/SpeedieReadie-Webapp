@@ -1,0 +1,77 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+    Import from File
+{% endblock %}
+
+{% block content %}
+    <h2>Import from File</h2>
+    <form id="file-upload-form" action="{% url 'import_from_file' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required>
+        <label for="file">Choose a file:</label>
+        <input type="file" id="file" name="file" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <div id="text-edit-modal" style="display: none;">
+        <h3>Edit Text</h3>
+        <textarea id="text-edit-area" rows="10" cols="50"></textarea>
+        <button onclick="saveText()">Save</button>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var form = document.getElementById("file-upload-form");
+            if (form) {
+                form.onsubmit = function(event) {
+                    event.preventDefault();
+                    const formData = new FormData(this);
+                    const xhr = new XMLHttpRequest();
+                    xhr.open("POST", form.action, true);
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            const response = JSON.parse(xhr.responseText);
+                            showEditModal(response.text, formData.get('title'));
+                        } else {
+                            const response = JSON.parse(xhr.responseText);
+                            alert("An error occurred while uploading the file: " + response.message);
+                        }
+                    };
+                    xhr.onerror = function() {
+                        alert("An error occurred while uploading the file.");
+                    };
+                    xhr.send(formData);
+                };
+            }
+        });
+
+        function showEditModal(text, title) {
+            document.getElementById("text-edit-area").value = text;
+            document.getElementById("text-edit-modal").style.display = 'block';
+            document.getElementById("text-edit-area").dataset.title = title;
+        }
+
+        function saveText() {
+            const editedText = document.getElementById("text-edit-area").value;
+            const title = document.getElementById("text-edit-area").dataset.title;
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "{% url 'save_imported_text' %}", true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    alert("Text saved successfully!");
+                    document.getElementById("text-edit-modal").style.display = 'none';
+                } else {
+                    alert("An error occurred while saving the text.");
+                }
+            };
+            xhr.send(JSON.stringify({ title: title, text_content: editedText }));
+        }
+    </script>
+{% endblock %}

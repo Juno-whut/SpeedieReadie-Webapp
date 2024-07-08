@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+    Add New Text
+{% endblock %}
+
+{% block content %}
+    <h2>Add New Text</h2>
+    <form id="add-text-form" method="post" action="{% url 'add_text' %}">
+        {% csrf_token %}
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required>
+        <label for="text">Text:</label>
+        <textarea id="text" name="text" rows="10" cols="50" required></textarea>
+        <button type="submit">Add Text</button>
+    </form>
+{% endblock %}
