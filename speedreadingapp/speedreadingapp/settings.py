@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'SECRET_KEY'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -126,9 +126,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Firebase Admin SDK configuration
-FIREBASE_CERT_PATH = config('FIRBASE_CERT_PATH')
+FIREBASE_CERT_PATH = config('FIREBASE_CERT_PATH')
 
-cred = credentials.Certificate('FIRBASE_CERT_PATH')
+cred = credentials.Certificate('FIREBASE_CERT_PATH')
 firebase_admin.initialize_app(cred)
 
 # Initialize Firestore DB
