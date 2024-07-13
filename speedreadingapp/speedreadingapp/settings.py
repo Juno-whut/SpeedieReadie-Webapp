@@ -1,9 +1,7 @@
+from decouple import config
 from pathlib import Path
 import firebase_admin
 from firebase_admin import credentials, firestore
-from .firebase import *
-import os 
-from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -129,5 +127,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Firebase Admin SDK configuration
 FIREBASE_CERT_PATH = config('FIRBASE_CERT_PATH')
+
+cred = credentials.Certificate('FIRBASE_CERT_PATH')
+firebase_admin.initialize_app(cred)
+
 # Initialize Firestore DB
 FIRESTORE_DB = firebase_admin.firestore.client()
