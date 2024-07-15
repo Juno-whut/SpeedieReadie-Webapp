@@ -4,8 +4,18 @@ from .forms import TextForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 db = settings.FIRESTORE_DB
+
+# Sample API endpoint for testing react setup
+@api_view(['GET'])
+def api_home(request):
+    data = {
+        "message": "Hello, world!"
+    }
+    return Response(data)
 
 def home(request):
     if request.method == 'POST':

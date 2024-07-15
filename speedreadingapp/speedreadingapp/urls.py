@@ -3,6 +3,8 @@ from django.urls import path, include
 from users import views as user_views
 from django.contrib.auth import views as auth_views
 from . import views
+from django.views.generic import TemplateView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
@@ -13,5 +15,7 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
     path('library/', include('UserLibrary.urls')),
     path('', include('django.contrib.auth.urls')),
-    path('', include('users.urls'))
+    path('', include('users.urls')),
+    path('api/home/', views.api_home, name='api-home'),
+    path('', TemplateView.as_view(template_name='index.html'), name='home'),
 ]
