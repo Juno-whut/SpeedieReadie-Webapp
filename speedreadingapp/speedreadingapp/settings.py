@@ -128,8 +128,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Firebase Admin SDK configuration
 FIREBASE_CERT_PATH = config('FIREBASE_CERT_PATH')
 
-cred = credentials.Certificate('FIREBASE_CERT_PATH')
+# Initialize Firebase Admin SDK
+cred = credentials.Certificate(FIREBASE_CERT_PATH)
 firebase_admin.initialize_app(cred)
 
 # Initialize Firestore DB
-FIRESTORE_DB = firebase_admin.firestore.client()
+FIRESTORE_DB = firestore.client()
