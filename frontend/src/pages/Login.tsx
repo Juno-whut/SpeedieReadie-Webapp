@@ -1,18 +1,18 @@
 // frontend/src/pages/Login.tsx
 
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { login } from '../auth';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
       await login(email, password);
-      history.push('/profile');
+      navigate('/profile');
     } catch (error) {
       console.error("Login failed:", error);
     }
