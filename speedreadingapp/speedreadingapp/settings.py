@@ -1,6 +1,7 @@
+# settings.py
+
 from decouple import config
 from pathlib import Path
-import os
 import firebase_admin
 from firebase_admin import credentials, firestore
 
@@ -49,10 +50,7 @@ ROOT_URLCONF = 'speedreadingapp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR, 'templates'),
-            os.path.join(BASE_DIR.parent, 'frontend', 'src'),
-        ],
+        'DIRS': ['templates', 'frontend'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,6 +72,7 @@ WSGI_APPLICATION = 'speedreadingapp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# Django Database Configuration
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -116,8 +115,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-    os.path.join(BASE_DIR.parent, 'frontend', 'src', 'assets'),
+    BASE_DIR / 'static',
+    BASE_DIR / 'frontend',
 ]
 
 # Default primary key field type
@@ -134,4 +133,3 @@ firebase_admin.initialize_app(cred)
 
 # Initialize Firestore DB
 FIRESTORE_DB = firestore.client()
-

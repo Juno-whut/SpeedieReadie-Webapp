@@ -9,6 +9,11 @@ from rest_framework.response import Response
 
 db = settings.FIRESTORE_DB
 
+
+#view to serve index.html
+def index(request):
+    return render(request, 'index.html')
+
 # Sample API endpoint for testing react setup
 @api_view(['GET'])
 def api_home(request):
