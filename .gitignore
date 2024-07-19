@@ -1,0 +1,8 @@
+# ignore virtual env
+.venv/
+
+# ignore json admin file
+speedreading-webapp-firebase-adminsdk-p4peq-6464db7e2a.json
+
+# enviroment variables
+.env

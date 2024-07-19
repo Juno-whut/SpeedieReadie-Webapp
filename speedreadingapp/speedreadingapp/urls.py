@@ -1,17 +1,19 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from users import views as user_views
 from django.contrib.auth import views as auth_views
 from . import views
+from .views import index
+from django.views.generic import TemplateView
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'),
-    path('home_speed_read/', views.speed_read_home, name='home-speed-read'),
-    path('register/', user_views.register, name='register'),
-    path('profile/', user_views.profile, name='profile'),
-    path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
-    path('library/', include('UserLibrary.urls')),
-    path('', include('django.contrib.auth.urls')),
-    path('', include('users.urls'))
+    path('api/', views.speed_read_home, name='speed_read_home'),
+    path('api/', include('users.urls')),
+    path('api/', include('UserLibrary.urls')),
+    path('api/home/', views.api_home, name='api-home'),
+    re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
 ]
+
+
