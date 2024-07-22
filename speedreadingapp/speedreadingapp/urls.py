@@ -12,6 +12,7 @@ urlpatterns = [
     path('api/', views.speed_read_home, name='speed_read_home'),
     path('api/', include('users.urls')),
     path('api/', include('UserLibrary.urls')),
+    path('api', include('api.urls')),
     path('api/home/', views.api_home, name='api-home'),
     re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
 ]
