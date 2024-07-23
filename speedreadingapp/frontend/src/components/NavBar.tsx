@@ -13,17 +13,11 @@ const Navigation: React.FC = () => {
           <LinkContainer to="/">
             <Nav.Link>Home</Nav.Link>
           </LinkContainer>
-          <LinkContainer to="/profile">
-            <Nav.Link>Profile</Nav.Link>
-          </LinkContainer>
-          <LinkContainer to="/library">
-            <Nav.Link>Library</Nav.Link>
+          <LinkContainer to="/register">
+            <Nav.Link>Register</Nav.Link>
           </LinkContainer>
           <LinkContainer to="/login">
             <Nav.Link>Login</Nav.Link>
-          </LinkContainer>
-          <LinkContainer to="/register">
-            <Nav.Link>Register</Nav.Link>
           </LinkContainer>
         </Nav>
       </Navbar.Collapse>
