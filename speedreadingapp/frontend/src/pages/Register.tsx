@@ -1,10 +1,11 @@
 // src/pages/Register.tsx
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../config/firebaseConfig';
-import TextInput from '../components/TextInput';
 import Button from '../components/Button';
+import TextInput from '../components/TextInput';
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -12,10 +13,11 @@ const Register: React.FC = () => {
   const [username, setUsername] = useState('');
   const navigate = useNavigate();
 
-  const handleRegister = async () => {
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      // You can also save the username in Firestore or Realtime Database
+      // Update user profile with username if necessary
       navigate('/profile');
     } catch (error) {
       console.error("Registration failed:", error);
@@ -25,10 +27,33 @@ const Register: React.FC = () => {
   return (
     <div className="container mt-5">
       <h1>Register</h1>
-      <TextInput type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
-      <TextInput type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
-      <TextInput type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
-      <Button onClick={handleRegister}>Register</Button>
+      <form onSubmit={handleRegister}>
+        <TextInput
+          id="username"
+          label="Username"
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Username"
+        />
+        <TextInput
+          id="email"
+          label="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+        />
+        <TextInput
+          id="password"
+          label="Password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+        />
+        <Button type="submit">Register</Button>
+      </form>
     </div>
   );
 };
