@@ -21,24 +21,8 @@ import ebooklib
 from ebooklib import epub
 from bs4 import BeautifulSoup
 import tempfile
-import os
 
 db = settings.FIRESTORE_DB
-
-from rest_framework import viewsets, permissions
-from UserLibrary.models import Book
-from UserLibrary.serializers import BookSerializer
-
-class BookViewSet(viewsets.ModelViewSet):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return self.queryset.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
 
 
 @login_required

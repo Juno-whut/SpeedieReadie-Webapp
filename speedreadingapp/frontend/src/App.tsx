@@ -1,24 +1,27 @@
-// src/App.tsx
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
-import Register from './pages/Register';
-import Login from './pages/Login';
-import Profile from './pages/Profile';
-import Library from './pages/Library'
+import Library from './pages/Library';
+import AddText from './pages/AddText';
+import ImportFromFile from './pages/ImportFromFile';
+import ImportFromURL from './pages/ImportFromURL';
+import EditText from './pages/EditText';
+import NavBar from './components/NavBar';
 
-
-const App: React.FC = () => (
-  <Router>
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/library" element={<Library />}/>
-    </Routes>
-  </Router>
-);
+const App: React.FC = () => {
+  return (
+    <Router>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/library" element={<Library />} />
+        <Route path="/addtext" element={<AddText />} />
+        <Route path="/importfromfile" element={<ImportFromFile />} />
+        <Route path="/importfromurl" element={<ImportFromURL />} />
+        <Route path="/edittext/:title" element={<EditText />} />
+      </Routes>
+    </Router>
+  );
+};
 
 export default App;
-
