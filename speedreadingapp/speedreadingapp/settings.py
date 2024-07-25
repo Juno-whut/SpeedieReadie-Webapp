@@ -58,6 +58,17 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:5173',
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
+CORS_ALLOW_ALL_ORIGINS = True
 WSGI_APPLICATION = 'speedreadingapp.wsgi.application'
 
 DATABASES = {

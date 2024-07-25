@@ -6,6 +6,8 @@ import AddText from './pages/AddText';
 import ImportFromFile from './pages/ImportFromFile';
 import ImportFromURL from './pages/ImportFromURL';
 import EditText from './pages/EditText';
+import Login from './pages/Login'
+import Register from './pages/Register'
 import NavBar from './components/NavBar';
 
 const App: React.FC = () => {
@@ -14,6 +16,8 @@ const App: React.FC = () => {
       <NavBar />
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/library" element={<Library />} />
         <Route path="/addtext" element={<AddText />} />
         <Route path="/importfromfile" element={<ImportFromFile />} />

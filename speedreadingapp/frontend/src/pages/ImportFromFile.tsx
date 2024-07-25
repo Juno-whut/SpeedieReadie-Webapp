@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
-import { db } from '../config/firebaseConfig';
-import { doc, setDoc } from 'firebase/firestore';
+import { getCookie } from '../utils'; // Import your utility function to get the CSRF token
 
 const ImportFromFile: React.FC = () => {
   const [title, setTitle] = useState('');
@@ -16,18 +15,31 @@ const ImportFromFile: React.FC = () => {
   };
 
   const handleImport = async () => {
-    if (!title || !file) {
-      console.error("Title or file is missing");
-      return;
+    const formData = new FormData();
+    formData.append('title', title);
+    if (file) {
+      formData.append('file', file);
     }
 
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const text = e.target?.result as string;
-      navigate('/edittext', { state: { title, text } });
-    };
+    const csrfToken = getCookie('csrftoken');
 
-    reader.readAsText(file);
+    const headers: HeadersInit = {};
+    if (csrfToken) {
+      headers['X-CSRFToken'] = csrfToken;
+    }
+
+    const response = await fetch('/api/import_from_file/', {
+      method: 'POST',
+      headers,
+      body: formData,
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      navigate('/edittext', { state: { title, text: data.text } });
+    } else {
+      console.error('Error importing file');
+    }
   };
 
   return (

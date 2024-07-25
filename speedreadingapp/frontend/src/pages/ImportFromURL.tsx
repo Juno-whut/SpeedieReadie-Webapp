@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
-import { db } from '../config/firebaseConfig';
-import { doc, setDoc } from 'firebase/firestore';
+import { getCookie } from '../utils'; // Import your utility function to get the CSRF token
 
 const ImportFromURL: React.FC = () => {
   const [title, setTitle] = useState('');
@@ -10,17 +9,26 @@ const ImportFromURL: React.FC = () => {
   const navigate = useNavigate();
 
   const handleImport = async () => {
-    if (!title || !url) {
-      console.error("Title or URL is missing");
-      return;
+    const csrfToken = getCookie('csrftoken');
+
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+    if (csrfToken) {
+      headers['X-CSRFToken'] = csrfToken;
     }
 
-    try {
-      const response = await fetch(url);
-      const text = await response.text();
-      navigate('/edittext', { state: { title, text } });
-    } catch (error) {
-      console.error("Failed to fetch URL:", error);
+    const response = await fetch('/api/import_from_url/', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ title, url }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      navigate('/edittext', { state: { title, text: data.text } });
+    } else {
+      console.error('Error importing URL');
     }
   };
 

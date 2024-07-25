@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
-import { db } from '../config/firebaseConfig';
-import { doc, setDoc } from 'firebase/firestore';
+import { getCookie } from '../utils'; // Import your utility function to get the CSRF token
 
 const EditText: React.FC = () => {
   const location = useLocation();
@@ -11,19 +10,26 @@ const EditText: React.FC = () => {
   const [editedText, setEditedText] = useState(text);
 
   const handleSaveText = async () => {
-    if (!title) {
-      console.error("Title is undefined");
-      return;
-    }
-    // Split text into chunks and save to Firebase
-    const chunks = editedText.match(/.{1,1024}/g) || [];
-    const bookRef = doc(db, 'books', title);
-    for (let i = 0; i < chunks.length; i++) {
-      await setDoc(doc(bookRef, 'chunks', i.toString()), { content: chunks[i] });
-    }
-    await setDoc(bookRef, { title, totalChunks: chunks.length });
+    const csrfToken = getCookie('csrftoken');
 
-    navigate('/library');
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+    if (csrfToken) {
+      headers['X-CSRFToken'] = csrfToken;
+    }
+
+    const response = await fetch('/api/save_text/', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ title, text: editedText }),
+    });
+
+    if (response.ok) {
+      navigate('/library');
+    } else {
+      console.error('Error saving text');
+    }
   };
 
   return (

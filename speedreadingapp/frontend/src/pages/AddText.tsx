@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
-import { db } from '../config/firebaseConfig';
-import { doc, setDoc } from 'firebase/firestore';
+import { getCookie } from '../utils';
 
 const AddText: React.FC = () => {
   const [title, setTitle] = useState('');
@@ -10,19 +9,32 @@ const AddText: React.FC = () => {
   const navigate = useNavigate();
 
   const handleSaveText = async () => {
-    if (!title || !text) {
-      console.error("Title or text is missing");
-      return;
-    }
-    // Split text into chunks and save to Firebase
-    const chunks = text.match(/.{1,1024}/g) || [];
-    const bookRef = doc(db, 'books', title);
-    for (let i = 0; i < chunks.length; i++) {
-      await setDoc(doc(bookRef, 'chunks', i.toString()), { content: chunks[i] });
-    }
-    await setDoc(bookRef, { title, totalChunks: chunks.length });
+    const csrfToken = getCookie('csrftoken');
 
-    navigate('/library');
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+    if (csrfToken) {
+      headers['X-CSRFToken'] = csrfToken;
+    }
+
+    try {
+      const response = await fetch('/api/add_text/', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ title, text }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error saving text:', errorText);
+        throw new Error(`Error saving text: ${response.statusText}`);
+      }
+
+      navigate('/library');
+    } catch (error) {
+      console.error('An error occurred while saving the text:', error);
+    }
   };
 
   return (
