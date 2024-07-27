@@ -1,15 +1,16 @@
-from django.urls import path
-from . import views
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import BookViewSet, ImportFromURLView, SaveImportedTextView, ImportFromFileView, SpeedReadView, DeleteBookView, EditBookView
+
+router = DefaultRouter()
+router.register(r'books', BookViewSet, basename='books')
 
 urlpatterns = [
-    path('', views.library, name='library'),
-    path('add_text/', views.add_text, name='add_text'),
-    path('import_from_url/', views.import_from_url, name='import_from_url'),
-    path('save_imported_text/', views.save_imported_text, name='save_imported_text'),
-    path('import_from_file/', views.import_from_file, name='import_from_file'),
-    path('speed_read/<str:text_id>/', views.speed_read, name='speed_read'),
-    path('delete_book/<str:book_id>/', views.delete_book, name='delete_book'),
-    path('edit_book/<str:book_id>/', views.edit_book, name='edit_book'),
-    path('save_user_settings/', views.save_user_settings, name='save_user_settings'),
-    path('user_settings/', views.user_settings, name='user_settings')
+    path('', include(router.urls)),
+    path('import_from_url/', ImportFromURLView.as_view(), name='import_from_url'),
+    path('save_imported_text/', SaveImportedTextView.as_view(), name='save_imported_text'),
+    path('import_from_file/', ImportFromFileView.as_view(), name='import_from_file'),
+    path('speed_read/<str:text_id>/', SpeedReadView.as_view(), name='speed_read'),
+    path('delete_book/<str:book_id>/', DeleteBookView.as_view(), name='delete_book'),
+    path('edit_book/<str:book_id>/', EditBookView.as_view(), name='edit_book'),
 ]
