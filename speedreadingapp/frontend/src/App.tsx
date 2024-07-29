@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import Library from './pages/Library';
 import AddText from './pages/AddText';
@@ -9,22 +9,53 @@ import EditText from './pages/EditText';
 import Login from './pages/Login'
 import Register from './pages/Register'
 import NavBar from './components/NavBar';
+import firebaseConfig from './config/firebaseConfig';
+import { initializeApp } from 'firebase/app';
+
+const app = initializeApp(firebaseConfig);
+
 
 const App: React.FC = () => {
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <HomePage />
+    },
+    {
+      path: "/login",
+      element: <Login />
+    },
+    {
+      path: "/register",
+      element: <Register />
+    },
+    {
+      path: "/library",
+      element: <Library />
+    },
+    {
+      path: "/addtext",
+      element: <AddText />
+    },
+    {
+      path: "/importfromfile",
+      element: <ImportFromFile />
+    },
+    {
+      path: "/importfromurl",
+      element: <ImportFromURL />
+    },
+    {
+      path: "/edittext/:title",
+      element: <EditText />
+    },
+  ])
+
   return (
-    <Router>
+    <>
       <NavBar />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/library" element={<Library />} />
-        <Route path="/addtext" element={<AddText />} />
-        <Route path="/importfromfile" element={<ImportFromFile />} />
-        <Route path="/importfromurl" element={<ImportFromURL />} />
-        <Route path="/edittext/:title" element={<EditText />} />
-      </Routes>
-    </Router>
+      <RouterProvider router={router}></RouterProvider>
+    </>
   );
 };
 

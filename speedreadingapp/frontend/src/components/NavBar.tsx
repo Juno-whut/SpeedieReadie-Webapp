@@ -1,81 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
-import '../styles/NavBar.css';
+import React from 'react';
+import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
+import { signOut, getAuth } from 'firebase/auth';
 
-const NavBar: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [user, setUser] = useState<any>(null);
 
-  const handleToggle = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const handleLogout = async () => {
-    const auth = getAuth();
+const NavBar = () => {
+  async function handleSignOut() {
     try {
-      await signOut(auth);
-      setUser(null);
-      console.log("User logged out");
+      await signOut(getAuth());
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.log(error)
     }
-  };
-
-  useEffect(() => {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-        console.log("User signed in:", user);
-      } else {
-        setUser(null);
-        console.log("No user signed in");
-      }
-    });
-  }, []);
-
+  }
   return (
-    <nav className="navbar">
-      <div className="navbar-container">
-        <Link to="/" className="navbar-logo">Speedie Readie</Link>
-        <div className="navbar-right">
-          <Link to="/" className="nav-item">Home</Link>
-          {user ? (
-            <>
-              <Link to="/profile" className="nav-item">Profile</Link>
-              <Link to="/library" className="nav-item">Library</Link>
-              <Link to="/" className="nav-item" onClick={handleLogout}>Logout</Link>
-            </>
-          ) : (
-            <>
-              <Link to="/login" className="nav-item">Login</Link>
-              <Link to="/register" className="nav-item">Register</Link>
-            </>
-          )}
-        </div>
-        <button className="navbar-toggle" onClick={handleToggle}>
-          ☰
-        </button>
-      </div>
-      <div className={`mobile-menu ${isOpen ? 'show' : ''}`}>
-        <Link to="/" className="nav-item" onClick={handleToggle}>Home</Link>
-        {user ? (
-          <>
-            <Link to="/profile" className="nav-item" onClick={handleToggle}>Profile</Link>
-            <Link to="/library" className="nav-item" onClick={handleToggle}>Library</Link>
-            <Link to="/" className="nav-item" onClick={() => { handleLogout(); handleToggle(); }}>Logout</Link>
-          </>
-        ) : (
-          <>
-            <Link to="/login" className="nav-item" onClick={handleToggle}>Login</Link>
-            <Link to="/register" className="nav-item" onClick={handleToggle}>Register</Link>
-          </>
-        )}
-      </div>
-    </nav>
+    <Navbar bg="light" expand="lg">
+      <Navbar.Brand href="/">Speedie Readie</Navbar.Brand>
+      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+      <Navbar.Collapse id="basic-navbar-nav">
+        <Nav className="mr-auto">
+          <Nav.Link href="/">Home</Nav.Link>
+          <Nav.Link href="/library">Library</Nav.Link>
+          <Nav.Link href="/register">Register</Nav.Link>
+          <Nav.Link href="/login">Login</Nav.Link>
+          <Nav.Link href="/logout">Logout</Nav.Link>
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
   );
 };
 
 export default NavBar;
-
