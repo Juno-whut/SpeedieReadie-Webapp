@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from UserLibrary.models import Book
+from .models import Book
 
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
-        fields = ['id', 'title', 'content', 'created_at', 'updated_at']
+        fields = '__all__'

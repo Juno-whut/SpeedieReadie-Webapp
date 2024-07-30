@@ -1,25 +1,67 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
-import Profile from './pages/Profile';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import { createBrowserRouter, RouterProvider, Routes, Route } from 'react-router-dom';
+import HomePage from './pages/HomePage';
 import Library from './pages/Library';
+import AddText from './pages/AddText';
+import ImportFromFile from './pages/ImportFromFile';
+import ImportFromURL from './pages/ImportFromURL';
+import EditText from './pages/EditText';
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Logout from './pages/Logout'
+import NavBar from './components/NavBar';
+import firebaseConfig from './config/firebaseConfig';
+import { initializeApp } from 'firebase/app';
+
+const app = initializeApp(firebaseConfig);
+
 
 const App: React.FC = () => {
-    return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/library" element={<Library />} />
-            </Routes>
-        </Router>
-    );
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <HomePage />
+    },
+    {
+      path: "/login",
+      element: <Login />
+    },
+    {
+      path: "/register",
+      element: <Register />
+    },
+    {
+      path: "/library",
+      element: <Library />
+    },
+    {
+      path: "/addtext",
+      element: <AddText />
+    },
+    {
+      path: "/importfromfile",
+      element: <ImportFromFile />
+    },
+    {
+      path: "/importfromurl",
+      element: <ImportFromURL />
+    },
+    {
+      path: "/edittext/:title",
+      element: <EditText />
+    },
+    {
+      path: "/logout",
+      element: <Logout />
+    },
+  ])
+
+  return (
+    <>
+      <NavBar />
+      <RouterProvider router={router}></RouterProvider>
+    </>
+  );
 };
 
 export default App;
-
-

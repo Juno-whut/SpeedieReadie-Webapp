@@ -2,6 +2,8 @@ from decouple import config
 from pathlib import Path
 import firebase_admin
 from firebase_admin import credentials, firestore
+import requests
+from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -10,6 +12,19 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:5173',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',  
+]
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_HEADERS = True
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -21,7 +36,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'users.apps.UsersConfig',
     'rest_framework',
+    'rest_framework_simplejwt',
     'UserLibrary',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -33,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'speedreadingapp.csrf.CsrfExemptSessionAuthentication',
 ]
 
 ROOT_URLCONF = 'speedreadingapp.urls'
@@ -53,9 +71,18 @@ TEMPLATES = [
     },
 ]
 
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:5173',
-]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
 
 WSGI_APPLICATION = 'speedreadingapp.wsgi.application'
 
@@ -104,3 +131,15 @@ cred = credentials.Certificate(FIREBASE_CERT_PATH)
 firebase_admin.initialize_app(cred)
 
 FIRESTORE_DB = firestore.client()
+
+
+
+# Function to get public keys from Google's endpoint
+def get_firebase_public_keys():
+    url = 'https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com'
+    response = requests.get(url)
+    response.raise_for_status()
+    return response.json()
+
+# Fetch the public keys
+firebase_public_keys = get_firebase_public_keys()

@@ -1,46 +1,36 @@
-// frontend/src/pages/Register.tsx
-
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { register } from '../auth';
+import { useNavigate } from 'react-router-dom';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import TextInput from '../components/TextInput';
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [username, setUsername] = useState('');
-  const history = useHistory();
+  const auth = getAuth();
+  const navigate = useNavigate();
 
-  const handleRegister = async () => {
-    try {
-      await register(email, password, username);
-      history.push('/profile');
-    } catch (error) {
-      console.error("Registration failed:", error);
-    }
-  };
+  async function handleRegister(event: React.FormEvent) {
+    event.preventDefault();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then ((userCredential) => {
+        const user = userCredential.user;
+        navigate('/login');
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      })
+  }
 
   return (
     <div>
       <h1>Register</h1>
-      <input
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Username"
-      />
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-      />
-      <button onClick={handleRegister}>Register</button>
+      <form onSubmit={handleRegister}>
+        <input onChange={(e) => setEmail(e.target.value)} type="text" placeholder="email" />
+        <input onChange={(e) => setPassword(e.target.value)} type="password" placeholder="password" />
+        <button type="submit">Register</button>
+      </form>
     </div>
   );
 };

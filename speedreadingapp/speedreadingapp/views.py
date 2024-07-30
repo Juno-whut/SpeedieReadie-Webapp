@@ -22,6 +22,7 @@ def api_home(request):
     }
     return Response(data)
 
+@api_view(['GET'])
 def home(request):
     if request.method == 'POST':
         form = TextForm(request.POST)
