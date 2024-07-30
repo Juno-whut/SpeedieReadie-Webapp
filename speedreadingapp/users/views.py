@@ -7,7 +7,16 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
 from .models import UserProfile
 from rest_framework.decorators import action
+from rest_framework.decorators import api_view, permission_classes
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 
+
+class AuthStatusView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response({"is_authenticated": True})
+    
 class UserViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserSerializer
@@ -42,3 +51,10 @@ class LoginView(APIView):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         })
+
+class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)

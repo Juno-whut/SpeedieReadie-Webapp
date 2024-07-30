@@ -8,6 +8,7 @@ import ImportFromURL from './pages/ImportFromURL';
 import EditText from './pages/EditText';
 import Login from './pages/Login'
 import Register from './pages/Register'
+import Logout from './pages/Logout'
 import NavBar from './components/NavBar';
 import firebaseConfig from './config/firebaseConfig';
 import { initializeApp } from 'firebase/app';
@@ -48,6 +49,10 @@ const App: React.FC = () => {
     {
       path: "/edittext/:title",
       element: <EditText />
+    },
+    {
+      path: "/logout",
+      element: <Logout />
     },
   ])
 

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+// src/components/Library.tsx
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, getDocs, DocumentData } from 'firebase/firestore';
-import { db } from '../config/firebaseConfig';
+import { fetchLibrary, deleteBook } from '../api';
 import Button from '../components/Button';
+import { getAuth } from 'firebase/auth';
 
 interface Book {
   id: string;
@@ -12,31 +13,47 @@ interface Book {
 const Library: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const navigate = useNavigate();
+  const { currentUser } = getAuth();
 
   useEffect(() => {
-    const fetchBooks = async () => {
-      const libraryBooks: Book[] = [];
-      const querySnapshot = await getDocs(collection(db, 'books'));
-      querySnapshot.forEach((doc) => {
-        const data = doc.data() as { title: string };
-        libraryBooks.push({ id: doc.id, title: data.title });
-      });
-      setBooks(libraryBooks);
+    if (!currentUser) {
+      navigate('/login');
+      return;
+    }
+
+    const fetchLibraryBooks = async () => {
+      try {
+        const libraryBooks = await fetchLibrary();
+        setBooks(libraryBooks);
+      } catch (error) {
+        console.error('Failed to fetch library:', error);
+      }
     };
-    fetchBooks();
-  }, []);
+
+    fetchLibraryBooks();
+  }, [currentUser, navigate]);
+
+  const handleDelete = async (bookId: string) => {
+    try {
+      await deleteBook(bookId);
+      setBooks(books.filter((book) => book.id !== bookId));
+    } catch (error) {
+      console.error('Failed to delete book:', error);
+    }
+  };
 
   return (
     <div>
-      <h1>Library</h1>
-      <div>
-        <Button type="button" onClick={() => navigate('/addtext')}>Add Text</Button>
-        <Button type="button" onClick={() => navigate('/importfromfile')}>Import from File</Button>
-        <Button type="button" onClick={() => navigate('/importfromurl')}>Import from URL</Button>
-      </div>
+      <h1>Your Library</h1>
+      <Button type="button" onClick={() => navigate('/add-text')}>Add Text</Button>
+      <Button type="button" onClick={() => navigate('/import-from-file')}>Import from File</Button>
+      <Button type="button" onClick={() => navigate('/import-from-url')}>Import from URL</Button>
       <ul>
         {books.map((book) => (
-          <li key={book.id}>{book.title}</li>
+          <li key={book.id}>
+            {book.title}
+            <Button type="button" onClick={() => handleDelete(book.id)}>Delete</Button>
+          </li>
         ))}
       </ul>
     </div>

@@ -3,6 +3,7 @@ import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import { signOut, getAuth } from 'firebase/auth';
 
 
+
 const NavBar = () => {
   async function handleSignOut() {
     try {
@@ -11,6 +12,7 @@ const NavBar = () => {
       console.log(error)
     }
   }
+
   return (
     <Navbar bg="light" expand="lg">
       <Navbar.Brand href="/">Speedie Readie</Navbar.Brand>
@@ -22,6 +24,7 @@ const NavBar = () => {
           <Nav.Link href="/register">Register</Nav.Link>
           <Nav.Link href="/login">Login</Nav.Link>
           <Nav.Link href="/logout">Logout</Nav.Link>
+        
         </Nav>
       </Navbar.Collapse>
     </Navbar>
