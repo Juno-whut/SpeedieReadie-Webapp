@@ -9,7 +9,7 @@ from users.models import UserProfile
 from .models import Book
 from .serializers import BookSerializer
 from django.shortcuts import redirect
-from rest_framework_simplejwt.authentication import JWTAuthentication
+
 
 from bs4 import BeautifulSoup
 from ebooklib import epub
@@ -31,7 +31,7 @@ class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
+    
 
     @action(detail=False, methods=['get'])
     def library(self, request):
@@ -61,7 +61,7 @@ class BookViewSet(viewsets.ModelViewSet):
 
 class ImportFromURLView(APIView):
     permission_classes = [IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
+   
 
     def post(self, request):
         url = request.data.get('url')
@@ -86,7 +86,7 @@ class ImportFromURLView(APIView):
 
 class SaveImportedTextView(APIView):
     permission_classes = [IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
+    
 
     def post(self, request):
         title = request.data.get('title')
@@ -116,7 +116,7 @@ class SaveImportedTextView(APIView):
 
 class ImportFromFileView(APIView):
     permission_classes = [IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
+   
 
     def post(self, request):
         try:
@@ -165,7 +165,7 @@ class ImportFromFileView(APIView):
 
 class SpeedReadView(APIView):
     permission_classes = [IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
+   
 
     def get(self, request, text_id):
         try:
@@ -213,7 +213,7 @@ class SpeedReadView(APIView):
 
 class DeleteBookView(APIView):
     permission_classes = [IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
+   
 
     def delete(self, request, book_id):
         user_id = request.user.id
@@ -231,7 +231,7 @@ class DeleteBookView(APIView):
 
 class EditBookView(APIView):
     permission_classes = [IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
+   
 
     def get(self, request, book_id):
         user_id = request.user.id

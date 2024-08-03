@@ -3,9 +3,7 @@ import { createBrowserRouter, RouterProvider, Routes, Route } from 'react-router
 import HomePage from './pages/HomePage';
 import Library from './pages/Library';
 import AddText from './pages/AddText';
-import ImportFromFile from './pages/ImportFromFile';
-import ImportFromURL from './pages/ImportFromURL';
-import EditText from './pages/EditText';
+
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Logout from './pages/Logout'
@@ -37,18 +35,6 @@ const App: React.FC = () => {
     {
       path: "/addtext",
       element: <AddText />
-    },
-    {
-      path: "/importfromfile",
-      element: <ImportFromFile />
-    },
-    {
-      path: "/importfromurl",
-      element: <ImportFromURL />
-    },
-    {
-      path: "/edittext/:title",
-      element: <EditText />
     },
     {
       path: "/logout",
