@@ -52,8 +52,8 @@ To set up and run SpeedieReadie on your local machine:
     python manage.py runserver
 3. **Set up the Frontend**
    - Navigate to the React project directory:
-     ```bash
-     cd frontend/
+    ```bash
+   cd frontend/
   - Install the required Node.js denpendencies:
     ```bash
     npm install
