@@ -65,6 +65,18 @@ To set up and run SpeedieReadie on your local machine:
 
     ## **Visuals**
 
+    Here are some screenshots and a link to the full 3 minute demo on Youtube!
+    ### **SpeedieReadie HomePage**
+      ![SpeedieReadie ScreenShot](https://github.com/Juno-whut/SpeedieReadie-Webapp/blob/NoAuthSpeedieReadie/READMEimages/speediereadieHOME.png?raw=true)
+    ### **SpeedieReadie Library**
+      ![SpeedieReadie ScreenShot](https://github.com/Juno-whut/SpeedieReadie-Webapp/blob/NoAuthSpeedieReadie/READMEimages/speediereadieLIBRARY.png?raw=true)
+    ### **SpeedieReadie EditPage**
+      ![SpeedieReadie ScreenShot](https://github.com/Juno-whut/SpeedieReadie-Webapp/blob/NoAuthSpeedieReadie/READMEimages/speediereadieEDITTEXT.png?raw=true)
+    ### **SpeedieReadie Speed Reading Page**
+       ![SpeedieReadie ScreenShot](https://github.com/Juno-whut/SpeedieReadie-Webapp/blob/NoAuthSpeedieReadie/READMEimages/speediereadieSPEEDREADING.png?raw=true)
+    ### **Watch the Full Demo on YT**
+    ![Watch on Youtube](https://www.youtube.com/watch?v=h5C-h2_8SuQ)
+    
     ---
 
     ## **Dependencies**
