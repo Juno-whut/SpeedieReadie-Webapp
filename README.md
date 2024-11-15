@@ -75,7 +75,7 @@ To set up and run SpeedieReadie on your local machine:
     ### **SpeedieReadie Speed Reading Page**
        ![SpeedieReadie ScreenShot](https://github.com/Juno-whut/SpeedieReadie-Webapp/blob/NoAuthSpeedieReadie/READMEimages/speediereadieSPEEDREADING.png?raw=true)
     ### **Watch the Full Demo on YT**
-    ![Watch on Youtube](https://www.youtube.com/watch?v=h5C-h2_8SuQ)
+    [![Watch on Youtube]((https://github.com/Juno-whut/SpeedieReadie-Webapp/blob/NoAuthSpeedieReadie/READMEimages/speediereadieHOME.png?raw=true)](https://www.youtube.com/watch?v=h5C-h2_8SuQ)
     
     ---
 
