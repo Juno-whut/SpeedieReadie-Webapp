@@ -60,7 +60,7 @@ To set up and run SpeedieReadie on your local machine:
   - Run the development server:
     ```bash
     npm run dev
-
+    ```
     ---
 
     ## **Visuals**
